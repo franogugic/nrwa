@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">MovieList ER dijagram</title>
+  <desc id="desc">ER dijagram za tablice korisnici, filmovi i korisnik_filmovi.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .canvas { fill: #f4f7fb; }
+      .title { fill: #111827; font: 700 34px Arial, sans-serif; }
+      .subtitle { fill: #475569; font: 16px Arial, sans-serif; }
+      .entity { fill: #ffffff; stroke: #243447; stroke-width: 2.5; }
+      .header { fill: #243447; }
+      .header-text { fill: #ffffff; font: 700 22px Arial, sans-serif; }
+      .field { fill: #172033; font: 16px Arial, sans-serif; }
+      .muted { fill: #64748b; font: 14px Arial, sans-serif; }
+      .pk-row { fill: #fff7ed; }
+      .fk-row { fill: #eff6ff; }
+      .rule-row { fill: #f0fdf4; }
+      .relationship { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .relationship-label { fill: #0f172a; font: 700 16px Arial, sans-serif; }
+      .relationship-note { fill: #475569; font: 14px Arial, sans-serif; }
+      .legend { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+      .legend-text { fill: #334155; font: 15px Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect class="canvas" width="1400" height="900"/>
+  <text class="title" x="700" y="56" text-anchor="middle">MovieList ER dijagram</text>
+  <text class="subtitle" x="700" y="86" text-anchor="middle">Centralni katalog filmova + osobni zapisi korisnika</text>
+
+  <g id="korisnici">
+    <rect class="entity" x="70" y="170" width="350" height="330" rx="10"/>
+    <rect class="header" x="70" y="170" width="350" height="62" rx="10"/>
+    <text class="header-text" x="245" y="209" text-anchor="middle">korisnici</text>
+
+    <rect class="pk-row" x="92" y="255" width="306" height="36" rx="5"/>
+    <text class="field" x="112" y="278">PK id INT UNSIGNED</text>
+    <text class="field" x="112" y="324">ime VARCHAR(100)</text>
+    <text class="field" x="112" y="364">email VARCHAR(255) UNIQUE</text>
+    <text class="field" x="112" y="404">lozinka_hash VARCHAR(255)</text>
+    <text class="field" x="112" y="444">uloga ENUM('user','admin')</text>
+    <text class="field" x="112" y="484">datum_registracije TIMESTAMP</text>
+  </g>
+
+  <g id="korisnik-filmovi">
+    <rect class="entity" x="525" y="250" width="365" height="410" rx="10"/>
+    <rect class="header" x="525" y="250" width="365" height="62" rx="10"/>
+    <text class="header-text" x="707.5" y="289" text-anchor="middle">korisnik_filmovi</text>
+
+    <rect class="pk-row" x="547" y="335" width="321" height="36" rx="5"/>
+    <text class="field" x="567" y="358">PK id INT UNSIGNED</text>
+    <text class="field" x="567" y="404">status ENUM('watched','want_to_watch')</text>
+    <text class="field" x="567" y="444">ocjena TINYINT NULL</text>
+    <text class="field" x="567" y="484">komentar VARCHAR(500) NULL</text>
+    <text class="field" x="567" y="524">datum_gledanja DATE NULL</text>
+    <rect class="fk-row" x="547" y="544" width="321" height="36" rx="5"/>
+    <text class="field" x="567" y="567">FK korisnik_id INT UNSIGNED</text>
+    <rect class="fk-row" x="547" y="588" width="321" height="36" rx="5"/>
+    <text class="field" x="567" y="611">FK film_id INT UNSIGNED</text>
+    <text class="field" x="567" y="648">datum_kreiranja TIMESTAMP</text>
+  </g>
+
+  <g id="filmovi">
+    <rect class="entity" x="980" y="170" width="350" height="370" rx="10"/>
+    <rect class="header" x="980" y="170" width="350" height="62" rx="10"/>
+    <text class="header-text" x="1155" y="209" text-anchor="middle">filmovi</text>
+
+    <rect class="pk-row" x="1002" y="255" width="306" height="36" rx="5"/>
+    <text class="field" x="1022" y="278">PK id INT UNSIGNED</text>
+    <text class="field" x="1022" y="324">naslov VARCHAR(255)</text>
+    <text class="field" x="1022" y="364">redatelj VARCHAR(150)</text>
+    <text class="field" x="1022" y="404">godina SMALLINT UNSIGNED</text>
+    <text class="field" x="1022" y="444">zanr VARCHAR(100)</text>
+    <text class="field" x="1022" y="484">opis TEXT</text>
+    <rect class="fk-row" x="1002" y="500" width="306" height="36" rx="5"/>
+    <text class="field" x="1022" y="523">FK dodao_korisnik_id</text>
+  </g>
+
+  <path class="relationship" d="M 420 562 H 495 V 562 H 525"/>
+  <text class="relationship-label" x="438" y="545">1</text>
+  <text class="relationship-label" x="502" y="545">N</text>
+  <text class="relationship-note" x="430" y="596">korisnik ima vise osobnih zapisa</text>
+
+  <path class="relationship" d="M 890 606 H 940 V 606 H 980"/>
+  <text class="relationship-label" x="908" y="589">N</text>
+  <text class="relationship-label" x="960" y="589">1</text>
+  <text class="relationship-note" x="910" y="640">vise zapisa pripada jednom filmu</text>
+
+  <path class="relationship" d="M 420 245 C 570 115, 815 115, 980 518"/>
+  <text class="relationship-label" x="440" y="230">1</text>
+  <text class="relationship-label" x="948" y="506">N</text>
+  <text class="relationship-note" x="548" y="137">korisnik moze dodati vise filmova u katalog</text>
+
+  <rect class="legend" x="70" y="735" width="1260" height="92" rx="10"/>
+  <rect class="pk-row" x="100" y="762" width="28" height="20" rx="4"/>
+  <text class="legend-text" x="140" y="778">PK - primarni kljuc</text>
+  <rect class="fk-row" x="330" y="762" width="28" height="20" rx="4"/>
+  <text class="legend-text" x="370" y="778">FK - strani kljuc</text>
+  <rect class="rule-row" x="560" y="762" width="28" height="20" rx="4"/>
+  <text class="legend-text" x="600" y="778">UNIQUE (korisnik_id, film_id) - jedan korisnik moze imati samo jedan zapis za isti film</text>
+  <text class="muted" x="100" y="810">Napomena: status ostaje u vrijednostima 'watched' i 'want_to_watch' jer ce se te vrijednosti koristiti u API-ju i logici aplikacije.</text>
+</svg>

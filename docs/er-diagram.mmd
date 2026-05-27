@@ -1,0 +1,36 @@
+erDiagram
+    KORISNICI ||--o{ KORISNIK_FILMOVI : ima
+    FILMOVI ||--o{ KORISNIK_FILMOVI : nalazi_se_u
+    KORISNICI ||--o{ FILMOVI : dodaje
+
+    KORISNICI {
+        int id PK
+        varchar ime
+        varchar email UK
+        varchar lozinka_hash
+        enum uloga
+        timestamp datum_registracije
+    }
+
+    FILMOVI {
+        int id PK
+        varchar naslov
+        varchar redatelj
+        smallint godina
+        varchar zanr
+        text opis
+        int dodao_korisnik_id FK
+        timestamp datum_dodavanja
+    }
+
+    KORISNIK_FILMOVI {
+        int id PK
+        enum status
+        tinyint ocjena
+        varchar komentar
+        date datum_gledanja
+        int korisnik_id FK
+        int film_id FK
+        timestamp datum_kreiranja
+        timestamp datum_izmjene
+    }
