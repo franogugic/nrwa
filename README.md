@@ -54,7 +54,19 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-PHP konfiguracija za bazu nalazi se u datoteci `src/config/database.php`. Prava `.env` datoteka ne ide na GitHub jer moze sadrzavati lokalne lozinke.
+PHP konfiguracija za bazu nalazi se u datoteci `src/config/database.php`, a PDO konekcija u `src/config/Connection.php`. Prava `.env` datoteka ne ide na GitHub jer moze sadrzavati lokalne lozinke.
+
+## MVC prikaz podataka
+
+Korak 2 dodaje osnovnu MVC strukturu bez autentikacije. Aplikacija koristi demo korisnika s ID-em `1` za prikaz osobne liste.
+
+Rute:
+
+- `/movies` - katalog svih filmova s prosjecnim ocjenama
+- `/movies/{id}` - detalji filma s prosjecnom ocjenom
+- `/my-list` - osobna lista demo korisnika, odvojena na `watched` i `want_to_watch`
+
+Za Laragon je preporuceno postaviti document root na `public/` folder projekta. Ako se koristi Apache virtual host, `.htaccess` u `public/` folderu preusmjerava rute na `public/index.php`.
 
 ## Struktura projekta
 
@@ -69,18 +81,28 @@ MovieList/
 │       └── ADR-001.md
 ├── .env.example
 ├── public/
+│   ├── .htaccess
+│   ├── index.php
+│   └── styles.css
 ├── src/
 │   ├── config/
+│   │   ├── Connection.php
 │   │   └── database.php
 │   ├── controllers/
+│   │   ├── MovieController.php
+│   │   └── UserMovieController.php
 │   ├── models/
-│   └── views/
+│   │   ├── MovieModel.php
+│   │   └── UserMovieModel.php
+│   ├── views/
+│   ├── Router.php
+│   └── helpers.php
 └── README.md
 ```
 
 ## Trenutni status
 
-Implementiran je Korak 1:
+Implementirani su Korak 1 i Korak 2:
 
 - inicijaliziran Git repozitorij
 - dodana osnovna struktura projekta
@@ -90,3 +112,7 @@ Implementiran je Korak 1:
 - dodano UNIQUE ogranicenje za jedan korisnicki zapis po filmu
 - dodani pocetni testni filmovi u centralni katalog
 - dodan ADR-001 zapis
+- dodana Router klasa
+- dodani modeli `MovieModel` i `UserMovieModel`
+- dodani controlleri `MovieController` i `UserMovieController`
+- dodani viewevi za katalog filmova, detalje filma i osobnu listu korisnika

@@ -4,6 +4,10 @@ CREATE DATABASE IF NOT EXISTS movielist_db
 
 USE movielist_db;
 
+DROP TABLE IF EXISTS korisnik_filmovi;
+DROP TABLE IF EXISTS filmovi;
+DROP TABLE IF EXISTS korisnici;
+
 CREATE TABLE korisnici (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     ime VARCHAR(100) NOT NULL,
@@ -70,3 +74,16 @@ INSERT INTO filmovi (naslov, redatelj, godina, zanr, opis) VALUES
 ('Parasite', 'Bong Joon-ho', 2019, 'Thriller', 'Crna komedija i triler o klasnim razlikama.'),
 ('Spirited Away', 'Hayao Miyazaki', 2001, 'Animation', 'Djevojcica ulazi u carobni svijet duhova.'),
 ('Gladiator', 'Ridley Scott', 2000, 'Action', 'Rimski general postaje gladijator i trazi pravdu.');
+
+INSERT INTO korisnici (ime, email, lozinka_hash, uloga) VALUES
+('Demo Korisnik', 'demo@example.com', '$2y$10$demoPasswordHashForMvcStepOnly', 'user'),
+('Administrator', 'admin@example.com', '$2y$10$demoAdminHashForMvcStepOnly', 'admin');
+
+INSERT INTO korisnik_filmovi (status, ocjena, komentar, datum_gledanja, korisnik_id, film_id) VALUES
+('watched', 5, 'Odlican film, posebno atmosfera i kraj.', '2026-01-12', 1, 1),
+('watched', 5, 'Klasik koji se mora pogledati.', '2026-02-04', 1, 2),
+('watched', 4, 'Jako dobra akcija i gluma.', '2026-02-22', 1, 3),
+('want_to_watch', NULL, 'Planiram pogledati ovaj vikend.', NULL, 1, 6),
+('want_to_watch', NULL, 'Preporucen zbog vizuala i price.', NULL, 1, 11),
+('watched', 4, 'Kompleksan i zanimljiv film.', '2026-03-16', 2, 6),
+('watched', 5, 'Jedan od najboljih SF filmova.', '2026-03-21', 2, 8);
