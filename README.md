@@ -68,6 +68,41 @@ Rute:
 
 Za Laragon je preporuceno postaviti document root na `public/` folder projekta. Ako se koristi Apache virtual host, `.htaccess` u `public/` folderu preusmjerava rute na `public/index.php`.
 
+## REST API
+
+Korak 3 dodaje REST API s JSON odgovorima. API za osobnu listu trenutno koristi demo korisnika s ID-em `1` jer autentikacija dolazi u sljedecem koraku.
+
+Endpointi:
+
+- `GET /api/movies` - dohvat javnog kataloga filmova s prosjecnim ocjenama
+- `GET /api/movies?search=inception` - pretraga filmova po naslovu, redatelju ili zanru
+- `GET /api/movies/{id}` - detalji jednog filma
+- `POST /api/user-movies` - dodavanje filma na osobnu listu
+- `PUT /api/user-movies/{id}` - azuriranje statusa, ocjene, komentara i datuma gledanja
+- `DELETE /api/user-movies/{id}` - uklanjanje filma s osobne liste
+
+Primjer `POST /api/user-movies` zahtjeva:
+
+```json
+{
+  "film_id": 6,
+  "status": "want_to_watch"
+}
+```
+
+Primjer `PUT /api/user-movies/1` zahtjeva:
+
+```json
+{
+  "status": "watched",
+  "ocjena": 5,
+  "komentar": "Odlican film.",
+  "datum_gledanja": "2026-06-08"
+}
+```
+
+Frontend koristi Fetch API za dodavanje filma na osobnu listu bez osvjezavanja stranice.
+
 ## Struktura projekta
 
 ```text
@@ -82,6 +117,7 @@ MovieList/
 ├── .env.example
 ├── public/
 │   ├── .htaccess
+│   ├── app.js
 │   ├── index.php
 │   └── styles.css
 ├── src/
@@ -90,7 +126,9 @@ MovieList/
 │   │   └── database.php
 │   ├── controllers/
 │   │   ├── MovieController.php
-│   │   └── UserMovieController.php
+│   │   ├── UserMovieController.php
+│   │   ├── ApiMovieController.php
+│   │   └── ApiUserMovieController.php
 │   ├── models/
 │   │   ├── MovieModel.php
 │   │   └── UserMovieModel.php
@@ -102,7 +140,7 @@ MovieList/
 
 ## Trenutni status
 
-Implementirani su Korak 1 i Korak 2:
+Implementirani su Korak 1, Korak 2 i Korak 3:
 
 - inicijaliziran Git repozitorij
 - dodana osnovna struktura projekta
@@ -116,3 +154,5 @@ Implementirani su Korak 1 i Korak 2:
 - dodani modeli `MovieModel` i `UserMovieModel`
 - dodani controlleri `MovieController` i `UserMovieController`
 - dodani viewevi za katalog filmova, detalje filma i osobnu listu korisnika
+- dodani REST API endpointi za katalog filmova i korisnicke zapise
+- dodana Fetch integracija za dodavanje filma na osobnu listu bez osvjezavanja stranice

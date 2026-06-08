@@ -18,5 +18,7 @@
     <main class="page">
         <?= $content ?>
     </main>
+
+    <script src="/app.js"></script>
 </body>
 </html>

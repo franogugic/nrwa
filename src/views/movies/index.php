@@ -31,6 +31,14 @@
                 </span>
                 <a href="/movies/<?= e((string) $movie['id']) ?>">Detalji</a>
             </div>
+            <div class="quick-actions">
+                <button type="button" data-add-movie data-movie-id="<?= e((string) $movie['id']) ?>" data-status="want_to_watch">
+                    Zelim pogledati
+                </button>
+                <button type="button" data-add-movie data-movie-id="<?= e((string) $movie['id']) ?>" data-status="watched">
+                    Pogledano
+                </button>
+            </div>
         </article>
     <?php endforeach; ?>
 </section>

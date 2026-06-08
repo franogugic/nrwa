@@ -178,6 +178,35 @@ button {
     padding-top: 18px;
 }
 
+.quick-actions,
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.quick-actions {
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+    padding-top: 16px;
+}
+
+.quick-actions button,
+.detail-actions button {
+    background: #ffffff;
+    color: var(--accent-strong);
+}
+
+.quick-actions button:hover,
+.detail-actions button:hover {
+    border-color: var(--accent);
+}
+
+button:disabled {
+    cursor: progress;
+    opacity: 0.7;
+}
+
 .detail-layout {
     align-items: stretch;
     display: grid;
@@ -220,6 +249,14 @@ button {
     margin-top: 22px;
 }
 
+.detail-actions {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 22px;
+    padding: 18px;
+}
+
 .list-columns {
     display: grid;
     gap: 22px;
@@ -236,11 +273,30 @@ button {
 }
 
 .result-note,
-.empty-state {
+.empty-state,
+.inline-message {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 8px;
     padding: 18px;
+}
+
+.inline-message {
+    flex-basis: 100%;
+    margin: 6px 0 0;
+    padding: 10px 12px;
+}
+
+.inline-message[data-type="success"] {
+    background: #ecfdf5;
+    border-color: #99f6e4;
+    color: #115e59;
+}
+
+.inline-message[data-type="error"] {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
 }
 
 @media (max-width: 760px) {

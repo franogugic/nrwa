@@ -13,4 +13,13 @@
     </aside>
 </section>
 
+<section class="detail-actions">
+    <button type="button" data-add-movie data-movie-id="<?= e((string) $movie['id']) ?>" data-status="want_to_watch">
+        Dodaj u zelim pogledati
+    </button>
+    <button type="button" data-add-movie data-movie-id="<?= e((string) $movie['id']) ?>" data-status="watched">
+        Dodaj kao pogledano
+    </button>
+</section>
+
 <a class="back-link" href="/movies">Nazad na katalog</a>

@@ -41,6 +41,20 @@ class UserMovieModel
         return $record ?: null;
     }
 
+    public function findById(int $id): ?array
+    {
+        $statement = $this->db->prepare("
+            SELECT kf.*, f.naslov, f.redatelj, f.godina, f.zanr
+            FROM korisnik_filmovi kf
+            INNER JOIN filmovi f ON f.id = kf.film_id
+            WHERE kf.id = :id
+        ");
+        $statement->execute(['id' => $id]);
+        $record = $statement->fetch();
+
+        return $record ?: null;
+    }
+
     public function create(array $data): int
     {
         $sql = "
