@@ -51,6 +51,10 @@ CREATE TABLE user_movies (
         CHECK (rating IS NULL OR rating BETWEEN 1 AND 5)
 ) ENGINE=InnoDB;
 
+INSERT INTO users (name, email, password_hash, role) VALUES
+('Test Korisnik', 'test@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'user'),
+('Admin', 'admin@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'admin');
+
 INSERT INTO movies (title, director, release_year, genre, description) VALUES
 ('The Shawshank Redemption', 'Frank Darabont', 1994, 'Drama', 'Prica o nadi, prijateljstvu i zivotu u zatvoru.'),
 ('The Godfather', 'Francis Ford Coppola', 1972, 'Crime', 'Klasik o obitelji Corleone i svijetu organiziranog kriminala.'),
