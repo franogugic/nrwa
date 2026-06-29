@@ -18,6 +18,26 @@ class UserMovieModel
         return $stmt->fetchAll();
     }
 
+    public function findByUserWithMovies(int $userId): array
+    {
+        $sql = "SELECT um.*, m.title, m.director, m.release_year, m.genre
+                FROM user_movies um
+                JOIN movies m ON m.id = um.movie_id
+                WHERE um.user_id = ?
+                ORDER BY m.title ASC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->db->prepare("SELECT * FROM user_movies WHERE id = ?");
+        $stmt->execute([$id]);
+        $record = $stmt->fetch();
+        return $record ?: null;
+    }
+
     public function findByUserAndMovie(int $userId, int $movieId): ?array
     {
         $stmt = $this->db->prepare("SELECT * FROM user_movies WHERE user_id = ? AND movie_id = ?");

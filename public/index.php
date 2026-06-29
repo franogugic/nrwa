@@ -4,16 +4,42 @@ require_once __DIR__ . '/../controllers/MovieController.php';
 require_once __DIR__ . '/../controllers/UserMovieController.php';
 require_once __DIR__ . '/../controllers/ApiMovieController.php';
 require_once __DIR__ . '/../controllers/ApiUserMovieController.php';
+require_once __DIR__ . '/../controllers/ApiAuthController.php';
+require_once __DIR__ . '/../controllers/ApiAdminMovieController.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// Makni base path i index.php iz URI-ja
+// Makni base path iz URI-ja
 $uri = str_replace(['/movielist/public/index.php', '/movielist/public'], '', $uri);
 $uri = $uri === '' ? '/' : $uri;
 
 // API rute
 if (str_starts_with($uri, '/api/')) {
+
+    // POST /api/auth/register
+    if ($method === 'POST' && $uri === '/api/auth/register') {
+        (new ApiAuthController())->register();
+        exit;
+    }
+
+    // POST /api/auth/login
+    if ($method === 'POST' && $uri === '/api/auth/login') {
+        (new ApiAuthController())->login();
+        exit;
+    }
+
+    // POST /api/admin/movies
+    if ($method === 'POST' && $uri === '/api/admin/movies') {
+        (new ApiAdminMovieController())->store();
+        exit;
+    }
+
+    // PUT /api/admin/movies/{id}
+    if ($method === 'PUT' && preg_match('#^/api/admin/movies/(\d+)$#', $uri, $m)) {
+        (new ApiAdminMovieController())->update((int) $m[1]);
+        exit;
+    }
 
     // GET /api/movies
     if ($method === 'GET' && $uri === '/api/movies') {
@@ -24,6 +50,12 @@ if (str_starts_with($uri, '/api/')) {
     // GET /api/movies/{id}
     if ($method === 'GET' && preg_match('#^/api/movies/(\d+)$#', $uri, $m)) {
         (new ApiMovieController())->show((int) $m[1]);
+        exit;
+    }
+
+    // GET /api/user-movies
+    if ($method === 'GET' && $uri === '/api/user-movies') {
+        (new ApiUserMovieController())->index();
         exit;
     }
 
@@ -57,6 +89,12 @@ $id   = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
 if ($page === 'my-list') {
     (new UserMovieController())->index();
+} elseif ($page === 'login') {
+    require __DIR__ . '/../views/auth/login.php';
+} elseif ($page === 'register') {
+    require __DIR__ . '/../views/auth/register.php';
+} elseif ($page === 'admin') {
+    require __DIR__ . '/../views/admin/movies.php';
 } elseif ($page === 'movie' && $id !== null) {
     (new MovieController())->show($id);
 } else {

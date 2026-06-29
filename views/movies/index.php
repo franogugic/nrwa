@@ -18,6 +18,21 @@
         nav .logo { font-size: 22px; font-weight: bold; color: #e50914; letter-spacing: 2px; }
         nav a { color: #ccc; text-decoration: none; font-size: 14px; }
         nav a:hover { color: #fff; }
+        nav .nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+        .btn-nav-login {
+            background: #e50914;
+            color: #fff;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-nav-login:hover { background: #b00710; }
+        .btn-logout { background: none; border: 1px solid #555; color: #ccc; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        .btn-logout:hover { border-color: #e50914; color: #fff; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
         h1 { font-size: 28px; margin-bottom: 25px; }
@@ -62,7 +77,13 @@
     <nav>
         <span class="logo">MOVIELIST</span>
         <a href="index.php">Katalog</a>
-        <a href="index.php?page=my-list">Moja lista</a>
+        <a href="index.php?page=my-list" id="nav-mylist" style="display:none;">Moja lista</a>
+        <a href="index.php?page=admin" id="nav-admin" style="display:none; color:#f5c518;">Admin</a>
+        <div class="nav-right">
+            <span id="nav-name" style="color:#aaa; font-size:14px; display:none;"></span>
+            <button class="btn-logout" id="btn-logout" onclick="logout()" style="display:none;">Odjava</button>
+            <a href="index.php?page=login" class="btn-nav-login" id="btn-login">Prijava</a>
+        </div>
     </nav>
 
     <div class="container">
@@ -86,5 +107,29 @@
             <?php endforeach; ?>
         </div>
     </div>
+
+    <script>
+        const token = localStorage.getItem('ml_token');
+        const name  = localStorage.getItem('ml_name');
+        const role  = localStorage.getItem('ml_role');
+
+        if (token) {
+            document.getElementById('nav-name').textContent = name;
+            document.getElementById('nav-name').style.display = 'inline';
+            document.getElementById('btn-logout').style.display = 'inline-block';
+            document.getElementById('btn-login').style.display = 'none';
+            document.getElementById('nav-mylist').style.display = 'inline';
+            if (role === 'admin') {
+                document.getElementById('nav-admin').style.display = 'inline';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('ml_token');
+            localStorage.removeItem('ml_name');
+            localStorage.removeItem('ml_role');
+            window.location.reload();
+        }
+    </script>
 </body>
 </html>

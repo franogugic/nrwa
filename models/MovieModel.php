@@ -54,6 +54,20 @@ class MovieModel
         return (int) $this->db->lastInsertId();
     }
 
+    public function update(int $id, array $data): bool
+    {
+        $sql = "UPDATE movies SET title = ?, director = ?, release_year = ?, genre = ?, description = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            $data['title'],
+            $data['director'],
+            $data['release_year'],
+            $data['genre'],
+            $data['description'] ?? null,
+            $id,
+        ]);
+    }
+
     public function search(string $term): array
     {
         $stmt = $this->db->prepare("SELECT * FROM movies WHERE title LIKE ? ORDER BY title ASC");

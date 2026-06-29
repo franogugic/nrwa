@@ -1,22 +1,28 @@
 <?php
 
 require_once __DIR__ . '/../models/UserMovieModel.php';
+require_once __DIR__ . '/../middleware/AuthMiddleware.php';
 
 class ApiUserMovieController
 {
     private UserMovieModel $userMovieModel;
-
-    // Privremeno fiksan user_id dok nema autentikacije (Korak 4)
-    private const CURRENT_USER_ID = 1;
 
     public function __construct()
     {
         $this->userMovieModel = new UserMovieModel();
     }
 
+    public function index(): void
+    {
+        $payload = AuthMiddleware::require();
+        $entries = $this->userMovieModel->findByUserWithMovies($payload['user_id']);
+        $this->json($entries);
+    }
+
     public function store(): void
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $payload = AuthMiddleware::require();
+        $data    = json_decode(file_get_contents('php://input'), true);
 
         $movieId = isset($data['movie_id']) ? (int) $data['movie_id'] : 0;
         $status  = $data['status'] ?? 'want_to_watch';
@@ -31,8 +37,7 @@ class ApiUserMovieController
             return;
         }
 
-        $existing = $this->userMovieModel->findByUserAndMovie(self::CURRENT_USER_ID, $movieId);
-
+        $existing = $this->userMovieModel->findByUserAndMovie($payload['user_id'], $movieId);
         if ($existing !== null) {
             $this->json(['error' => 'Film je već na tvojoj listi.'], 400);
             return;
@@ -40,7 +45,7 @@ class ApiUserMovieController
 
         $id = $this->userMovieModel->create([
             'status'   => $status,
-            'user_id'  => self::CURRENT_USER_ID,
+            'user_id'  => $payload['user_id'],
             'movie_id' => $movieId,
         ]);
 
@@ -49,7 +54,14 @@ class ApiUserMovieController
 
     public function update(int $id): void
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $payload = AuthMiddleware::require();
+        $data    = json_decode(file_get_contents('php://input'), true);
+
+        $record = $this->userMovieModel->findById($id);
+        if ($record === null || (int) $record['user_id'] !== $payload['user_id']) {
+            $this->json(['error' => 'Zapis nije pronađen ili nemate ovlasti.'], 403);
+            return;
+        }
 
         $status    = $data['status'] ?? 'watched';
         $rating    = isset($data['rating']) && $data['rating'] !== '' ? (int) $data['rating'] : null;
@@ -68,6 +80,14 @@ class ApiUserMovieController
 
     public function destroy(int $id): void
     {
+        $payload = AuthMiddleware::require();
+
+        $record = $this->userMovieModel->findById($id);
+        if ($record === null || (int) $record['user_id'] !== $payload['user_id']) {
+            $this->json(['error' => 'Zapis nije pronađen ili nemate ovlasti.'], 403);
+            return;
+        }
+
         $this->userMovieModel->delete($id);
         $this->json(['message' => 'Film uklonjen s liste.']);
     }
