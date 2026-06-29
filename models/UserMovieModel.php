@@ -79,6 +79,18 @@ class UserMovieModel
         ]);
     }
 
+    public function findCommentsByMovie(int $movieId): array
+    {
+        $sql = "SELECT um.rating, um.comment, um.watched_at, u.name
+                FROM user_movies um
+                JOIN users u ON u.id = um.user_id
+                WHERE um.movie_id = ? AND um.comment IS NOT NULL AND um.comment != ''
+                ORDER BY um.id DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$movieId]);
+        return $stmt->fetchAll();
+    }
+
     public function delete(int $id): bool
     {
         $stmt = $this->db->prepare("DELETE FROM user_movies WHERE id = ?");

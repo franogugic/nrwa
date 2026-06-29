@@ -44,7 +44,7 @@
         .empty { color: #666; text-align: center; padding: 40px; }
         .rating { color: #f5c518; }
 
-        .btn-remove {
+        .btn-remove, .btn-edit {
             background: none;
             border: 1px solid #555;
             color: #aaa;
@@ -52,8 +52,43 @@
             border-radius: 4px;
             font-size: 12px;
             cursor: pointer;
+            margin-right: 4px;
         }
         .btn-remove:hover { border-color: #e50914; color: #e50914; }
+        .btn-edit:hover { border-color: #27ae60; color: #27ae60; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #1f1f1f;
+            border-radius: 8px;
+            padding: 30px;
+            width: 400px;
+        }
+        .modal h3 { margin-bottom: 20px; }
+        .modal label { display: block; font-size: 13px; color: #aaa; margin-bottom: 5px; }
+        .modal input, .modal select, .modal textarea {
+            width: 100%;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .modal textarea { resize: vertical; height: 80px; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-save { background: #27ae60; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
+        .btn-cancel { background: none; border: 1px solid #555; color: #aaa; padding: 8px 20px; border-radius: 4px; cursor: pointer; }
 
         #auth-msg {
             text-align: center;
@@ -76,6 +111,27 @@
             <button class="btn-logout" onclick="logout()">Odjava</button>
         </div>
     </nav>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h3>Uredi zapis</h3>
+            <label>Status</label>
+            <select id="modal-status">
+                <option value="want_to_watch">Želim pogledati</option>
+                <option value="watched">Pogledano</option>
+            </select>
+            <label>Ocjena (1-5)</label>
+            <input type="number" id="modal-rating" min="1" max="5" placeholder="Ostavi prazno za bez ocjene">
+            <label>Komentar</label>
+            <textarea id="modal-comment" placeholder="Tvoj komentar..."></textarea>
+            <label>Datum gledanja</label>
+            <input type="date" id="modal-date">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Odustani</button>
+                <button class="btn-save" onclick="saveEntry()">Spremi</button>
+            </div>
+        </div>
+    </div>
 
     <div id="auth-msg" style="display:none;">
         Morate biti <a href="index.php?page=login">prijavljeni</a> kako biste vidjeli svoju listu filmova.
@@ -155,7 +211,10 @@
                     <td class="rating">${e.rating !== null ? '★ ' + e.rating + ' / 5' : '-'}</td>
                     <td>${e.comment ? e.comment : '-'}</td>
                     <td>${e.watched_at ? e.watched_at : '-'}</td>
-                    <td><button class="btn-remove" onclick="removeEntry(${e.id})">Ukloni</button></td>
+                    <td>
+                        <button class="btn-edit" onclick="openModal(${e.id}, ${e.rating ?? 'null'}, '${e.comment ?? ''}', '${e.watched_at ?? ''}', '${e.status}')">Uredi</button>
+                        <button class="btn-remove" onclick="removeEntry(${e.id})">Ukloni</button>
+                    </td>
                 </tr>
             `).join('');
 
@@ -175,6 +234,41 @@
                     <tbody>${rows}</tbody>
                 </table>
             `;
+        }
+
+        let currentEditId = null;
+
+        function openModal(id, rating, comment, watchedAt, status) {
+            currentEditId = id;
+            document.getElementById('modal-status').value = status;
+            document.getElementById('modal-rating').value = rating !== null ? rating : '';
+            document.getElementById('modal-comment').value = comment;
+            document.getElementById('modal-date').value = watchedAt;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentEditId = null;
+        }
+
+        function saveEntry() {
+            const status    = document.getElementById('modal-status').value;
+            const rating    = document.getElementById('modal-rating').value;
+            const comment   = document.getElementById('modal-comment').value;
+            const watchedAt = document.getElementById('modal-date').value;
+
+            fetch('/movielist/public/api/user-movies/' + currentEditId, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ status, rating, comment, watched_at: watchedAt })
+            })
+            .then(r => r.json())
+            .then(() => { closeModal(); loadList(); })
+            .catch(() => alert('Greška pri spremanju.'));
         }
 
         function removeEntry(id) {

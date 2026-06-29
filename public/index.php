@@ -53,6 +53,18 @@ if (str_starts_with($uri, '/api/')) {
         exit;
     }
 
+    // GET /api/movies/{id}/comments
+    if ($method === 'GET' && preg_match('#^/api/movies/(\d+)/comments$#', $uri, $m)) {
+        (new ApiMovieController())->comments((int) $m[1]);
+        exit;
+    }
+
+    // GET /api/user-movies/by-movie/{id}
+    if ($method === 'GET' && preg_match('#^/api/user-movies/by-movie/(\d+)$#', $uri, $m)) {
+        (new ApiUserMovieController())->getByMovie((int) $m[1]);
+        exit;
+    }
+
     // GET /api/user-movies
     if ($method === 'GET' && $uri === '/api/user-movies') {
         (new ApiUserMovieController())->index();

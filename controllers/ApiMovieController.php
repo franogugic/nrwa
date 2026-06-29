@@ -1,14 +1,17 @@
 <?php
 
 require_once __DIR__ . '/../models/MovieModel.php';
+require_once __DIR__ . '/../models/UserMovieModel.php';
 
 class ApiMovieController
 {
     private MovieModel $movieModel;
+    private UserMovieModel $userMovieModel;
 
     public function __construct()
     {
-        $this->movieModel = new MovieModel();
+        $this->movieModel     = new MovieModel();
+        $this->userMovieModel = new UserMovieModel();
     }
 
     public function index(): void
@@ -34,6 +37,12 @@ class ApiMovieController
         }
 
         $this->json($movie);
+    }
+
+    public function comments(int $id): void
+    {
+        $comments = $this->userMovieModel->findCommentsByMovie($id);
+        $this->json($comments);
     }
 
     private function json(mixed $data, int $status = 200): void

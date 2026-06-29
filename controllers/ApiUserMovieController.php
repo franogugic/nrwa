@@ -19,6 +19,13 @@ class ApiUserMovieController
         $this->json($entries);
     }
 
+    public function getByMovie(int $movieId): void
+    {
+        $payload = AuthMiddleware::require();
+        $entry   = $this->userMovieModel->findByUserAndMovie($payload['user_id'], $movieId);
+        $this->json($entry ?? (object)[]);
+    }
+
     public function store(): void
     {
         $payload = AuthMiddleware::require();

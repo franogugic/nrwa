@@ -52,8 +52,8 @@ CREATE TABLE user_movies (
 ) ENGINE=InnoDB;
 
 INSERT INTO users (name, email, password_hash, role) VALUES
-('Test Korisnik', 'test@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'user'),
-('Admin', 'admin@example.com', '$2y$10$abcdefghijklmnopqrstuv', 'admin');
+('Test Korisnik', 'test@example.com', '$2y$10$wcHGXQnsiw2NVmbiiXs50.uFkf9rRPtdq0JqSq/Xg8AtePEgyJcG2', 'user'),
+('Admin', 'admin@example.com', '$2y$10$O5nKyCnM6ioWMQyPaKRtXOEONS3lwKKMNIB/PWoqUAMyU43wAQlmm', 'admin');
 
 INSERT INTO movies (title, director, release_year, genre, description) VALUES
 ('The Shawshank Redemption', 'Frank Darabont', 1994, 'Drama', 'Prica o nadi, prijateljstvu i zivotu u zatvoru.'),
